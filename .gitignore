@@ -1,3 +1,14 @@
+# binarios
 blackjack
+*.exe
+*.obj
+*.o
+*.pdb
+*.ilk
 *.dSYM/
+# IDE
+.vs/
+*.vcxproj.user
+# sistema
 .DS_Store
+Thumbs.db
