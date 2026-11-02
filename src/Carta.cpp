@@ -6,6 +6,9 @@ Carta::Carta(string rango, string palo) {
     this->bocaArriba = true;
 }
 
+Carta::~Carta() {
+}
+
 // El As vale 11 aqui; la clase Mano lo baja a 1 cuando la mano se pasaria de 21
 int Carta::getValor() {
     if (rango == "A") {

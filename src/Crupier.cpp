@@ -4,6 +4,9 @@
 Crupier::Crupier() {
 }
 
+Crupier::~Crupier() {
+}
+
 void Crupier::recibirCarta(Carta carta) {
     mano.agregarCarta(carta);
 }

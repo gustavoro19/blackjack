@@ -11,6 +11,7 @@ class Carta {
         bool bocaArriba;
     public:
         Carta(string rango, string palo);
+        ~Carta();
         int getValor();
         bool esAs();
         string getRango();

@@ -7,6 +7,7 @@ class Crupier {
         Mano mano;
     public:
         Crupier();
+        ~Crupier();
         void recibirCarta(Carta carta);
         Mano& getMano();
         Carta getCartaVisible();

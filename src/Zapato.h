@@ -11,6 +11,7 @@ class Zapato {
         int cantidadMazos;
     public:
         Zapato(int cantidadMazos);
+        ~Zapato();
         void construir();
         void barajar();
         Carta repartir(bool bocaArriba);

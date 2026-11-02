@@ -15,6 +15,7 @@ class Mano {
         bool plantada;
     public:
         Mano();
+        ~Mano();
         Mano(int apuesta);
         void agregarCarta(Carta carta);
         int getValor();

@@ -14,11 +14,19 @@ class Juego {
         Crupier crupier;
         vector<Jugador> jugadores;
         int numeroRonda;
+        void pedirApuestas();
+        bool hayApuestas();
+        void ofrecerSeguro();
+        void resolverBlackjackDelCrupier();
     public:
         Juego();
+        ~Juego();
         void agregarJugador(string nombre);
+        void configurarJugadores();
         bool apuestaValida(Jugador& jugador, int monto);
         bool hayCartasParaRonda();
+        bool partidaTerminada();
+        void jugarRonda();
         void repartirCartasIniciales();
         void mostrarMesa();
         void limpiarRonda();

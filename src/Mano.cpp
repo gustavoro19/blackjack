@@ -8,6 +8,9 @@ Mano::Mano() {
     this->plantada = false;
 }
 
+Mano::~Mano() {
+}
+
 Mano::Mano(int apuesta) {
     this->apuesta = apuesta;
     this->doblada = false;

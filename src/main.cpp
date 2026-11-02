@@ -63,59 +63,16 @@ void probarBarajado()
 
 void repartirRonda(Juego &juego)
 {
-    vector<Jugador> &jugadores = juego.getJugadores();
-    if (jugadores.empty())
+    if (juego.getJugadores().empty())
     {
-        int cantidad = leerEntero("  Cantidad de jugadores (1-3): ", 1, 3);
-        for (int i = 0; i < cantidad; i++)
-        {
-            juego.agregarJugador(leerTexto("  Nombre del jugador " + to_string(i + 1) + ": "));
-        }
+        juego.configurarJugadores();
     }
-
-    if (!juego.hayCartasParaRonda())
+    if (juego.partidaTerminada())
     {
-        cout << "  No quedan suficientes cartas en el zapato. Fin de la partida." << endl;
+        cout << "  Fin de la partida: no quedan cartas suficientes o nadie tiene saldo." << endl;
         return;
     }
-
-    juego.limpiarRonda();
-    for (int i = 0; i < (int)jugadores.size(); i++)
-    {
-        Jugador &jugador = jugadores[i];
-        if (jugador.getSaldo() < APUESTA_MINIMA)
-        {
-            cout << "  " << jugador.getNombre() << " no tiene saldo para apostar." << endl;
-            return;
-        }
-        int maximo = APUESTA_MAXIMA;
-        if (jugador.getSaldo() < maximo)
-        {
-            maximo = jugador.getSaldo();
-        }
-        int apuesta = leerEntero("  Apuesta de " + jugador.getNombre() + " (saldo " + to_string(jugador.getSaldo())
-                                 + ", " + to_string(APUESTA_MINIMA) + "-" + to_string(maximo) + "): ",
-                                 APUESTA_MINIMA, maximo);
-        jugador.apostar(apuesta);
-    }
-
-    juego.repartirCartasIniciales();
-    juego.mostrarMesa();
-
-    Crupier &crupier = juego.getCrupier();
-    if (crupier.debeRevisarBlackjack())
-    {
-        cout << "  La carta visible del crupier vale 10 o es As: revisaria su carta oculta." << endl;
-    }
-    cout << "  Carta oculta del crupier: ";
-    crupier.revelarCartaOculta();
-    cout << crupier.getMano().toString() << " -> " << crupier.getMano().getValor() << endl;
-    // Todavia no hay pagos: se devuelve lo apostado para que el saldo no baje
-    for (int i = 0; i < (int)jugadores.size(); i++)
-    {
-        jugadores[i].cobrar(jugadores[i].getMano(0).getApuesta());
-    }
-    cout << "  (Turnos y pagos se completan en la Fase 2. Se devolvieron las apuestas.)" << endl;
+    juego.jugarRonda();
 }
 
 void probarMano(string descripcion, string rangos[], int cantidad)

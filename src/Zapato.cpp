@@ -6,6 +6,9 @@ Zapato::Zapato(int cantidadMazos) {
     construir();
 }
 
+Zapato::~Zapato() {
+}
+
 void Zapato::construir() {
     string rangos[13] = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
     string palos[4] = {"Corazones", "Diamantes", "Treboles", "Picas"};

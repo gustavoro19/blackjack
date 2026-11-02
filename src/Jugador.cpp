@@ -6,6 +6,9 @@ Jugador::Jugador(string nombre, int saldoInicial) {
     this->seguro = 0;
 }
 
+Jugador::~Jugador() {
+}
+
 string Jugador::getNombre() {
     return nombre;
 }
@@ -20,6 +23,11 @@ int Jugador::getSeguro() {
 
 bool Jugador::puedePagar(int monto) {
     return monto > 0 && monto <= saldo;
+}
+
+// Un jugador juega la ronda solo si aposto (apostar crea su primera mano)
+bool Jugador::participa() {
+    return !manos.empty();
 }
 
 // La apuesta sale del saldo en el momento de apostar y crea la primera mano.

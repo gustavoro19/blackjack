@@ -14,10 +14,12 @@ class Jugador {
         vector<Mano> manos;
     public:
         Jugador(string nombre, int saldoInicial);
+        ~Jugador();
         string getNombre();
         int getSaldo();
         int getSeguro();
         bool puedePagar(int monto);
+        bool participa();
         bool apostar(int monto);
         bool doblar(int indiceMano);
         bool dividir(int indiceMano);
