@@ -1,9 +1,8 @@
 #include "Jugador.h"
 
-Jugador::Jugador(string nombre, int saldoInicial) {
+Jugador::Jugador(string nombre, int fichasIniciales) {
     this->nombre = nombre;
-    this->saldo = saldoInicial;
-    this->seguro = 0;
+    this->fichas = fichasIniciales;
 }
 
 Jugador::~Jugador() {
@@ -13,16 +12,12 @@ string Jugador::getNombre() {
     return nombre;
 }
 
-int Jugador::getSaldo() {
-    return saldo;
-}
-
-int Jugador::getSeguro() {
-    return seguro;
+int Jugador::getFichas() {
+    return fichas;
 }
 
 bool Jugador::puedePagar(int monto) {
-    return monto > 0 && monto <= saldo;
+    return monto > 0 && monto <= fichas;
 }
 
 // Un jugador juega la ronda solo si aposto (apostar crea su primera mano)
@@ -30,13 +25,13 @@ bool Jugador::participa() {
     return !manos.empty();
 }
 
-// La apuesta sale del saldo en el momento de apostar y crea la primera mano.
+// La apuesta sale de las fichas en el momento de apostar y crea la primera mano.
 // Los limites minimo y maximo los valida Juego antes de llamar aqui.
 bool Jugador::apostar(int monto) {
     if (!puedePagar(monto)) {
         return false;
     }
-    saldo -= monto;
+    fichas -= monto;
     manos.push_back(Mano(monto));
     return true;
 }
@@ -46,7 +41,7 @@ bool Jugador::doblar(int indiceMano) {
     if (!mano.puedeDoblar() || !puedePagar(mano.getApuesta())) {
         return false;
     }
-    saldo -= mano.getApuesta();
+    fichas -= mano.getApuesta();
     mano.doblarApuesta();
     return true;
 }
@@ -57,7 +52,7 @@ bool Jugador::dividir(int indiceMano) {
         return false;
     }
     int apuesta = manos[indiceMano].getApuesta();
-    saldo -= apuesta;
+    fichas -= apuesta;
 
     Mano nuevaMano(apuesta);
     nuevaMano.agregarCarta(manos[indiceMano].quitarSegundaCarta());
@@ -67,18 +62,19 @@ bool Jugador::dividir(int indiceMano) {
     return true;
 }
 
-// El seguro puede ser hasta la mitad de la apuesta original
+// El seguro sale de las fichas del jugador pero se guarda en su mano.
+// Puede ser hasta la mitad de la apuesta original.
 bool Jugador::colocarSeguro(int monto) {
     if (manos.empty() || monto > manos[0].getApuesta() / 2 || !puedePagar(monto)) {
         return false;
     }
-    saldo -= monto;
-    seguro = monto;
+    fichas -= monto;
+    manos[0].asegurar(monto);
     return true;
 }
 
 void Jugador::cobrar(int monto) {
-    saldo += monto;
+    fichas += monto;
 }
 
 vector<Mano>& Jugador::getManos() {
@@ -91,5 +87,4 @@ Mano& Jugador::getMano(int indice) {
 
 void Jugador::limpiarRonda() {
     manos.clear();
-    seguro = 0;
 }

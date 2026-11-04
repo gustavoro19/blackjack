@@ -10,6 +10,7 @@ class Mano {
     private:
         vector<Carta> cartas;
         int apuesta;
+        int seguro;
         bool doblada;
         bool dividida;
         bool plantada;
@@ -26,12 +27,14 @@ class Mano {
         bool puedeDividir();
         Carta quitarSegundaCarta();
         void doblarApuesta();
+        void asegurar(int monto);
         void marcarDividida();
         void plantar();
         bool estaPlantada();
         bool estaDoblada();
         bool esDividida();
         int getApuesta();
+        int getSeguro();
         int getCantidadCartas();
         vector<Carta>& getCartas();
         string toString();

@@ -69,7 +69,7 @@ void repartirRonda(Juego &juego)
     }
     if (juego.partidaTerminada())
     {
-        cout << "  Fin de la partida: no quedan cartas suficientes o nadie tiene saldo." << endl;
+        cout << "  Fin de la partida: no quedan cartas suficientes o nadie tiene fichas." << endl;
         return;
     }
     juego.jugarRonda();

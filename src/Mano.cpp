@@ -3,6 +3,7 @@
 
 Mano::Mano() {
     this->apuesta = 0;
+    this->seguro = 0;
     this->doblada = false;
     this->dividida = false;
     this->plantada = false;
@@ -13,6 +14,7 @@ Mano::~Mano() {
 
 Mano::Mano(int apuesta) {
     this->apuesta = apuesta;
+    this->seguro = 0;
     this->doblada = false;
     this->dividida = false;
     this->plantada = false;
@@ -80,6 +82,10 @@ void Mano::doblarApuesta() {
     doblada = true;
 }
 
+void Mano::asegurar(int monto) {
+    seguro = monto;
+}
+
 void Mano::marcarDividida() {
     dividida = true;
 }
@@ -102,6 +108,10 @@ bool Mano::esDividida() {
 
 int Mano::getApuesta() {
     return apuesta;
+}
+
+int Mano::getSeguro() {
+    return seguro;
 }
 
 int Mano::getCantidadCartas() {

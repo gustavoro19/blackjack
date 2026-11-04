@@ -13,24 +13,24 @@ Juego::~Juego() {
 }
 
 void Juego::agregarJugador(string nombre) {
-    jugadores.push_back(Jugador(nombre, SALDO_INICIAL));
+    jugadores.push_back(Jugador(nombre, FICHAS_INICIALES));
 }
 
 void Juego::configurarJugadores() {
-    int cantidad = leerEntero("  Cantidad de jugadores (1-3): ", 1, 3);
+    int cantidad = leerEntero("  Cantidad de jugadores (1-" + to_string(MAX_JUGADORES) + "): ", 1, MAX_JUGADORES);
     for (int i = 0; i < cantidad; i++) {
         agregarJugador(leerTexto("  Nombre del jugador " + to_string(i + 1) + ": "));
     }
 }
 
 // La partida termina si el zapato ya no alcanza para otra ronda (no se rebaraja)
-// o si ningun jugador tiene saldo para la apuesta minima.
+// o si ningun jugador tiene fichas para la apuesta minima.
 bool Juego::partidaTerminada() {
     if (!hayCartasParaRonda()) {
         return true;
     }
     for (int i = 0; i < (int)jugadores.size(); i++) {
-        if (jugadores[i].getSaldo() >= APUESTA_MINIMA) {
+        if (jugadores[i].getFichas() >= APUESTA_MINIMA) {
             return false;
         }
     }
@@ -61,10 +61,10 @@ void Juego::jugarRonda() {
         }
         cout << "  El crupier no tiene blackjack." << endl;
     }
-    // Sin blackjack del crupier el seguro se pierde (ya se desconto del saldo)
+    // Sin blackjack del crupier el seguro se pierde (ya se desconto de las fichas)
     for (int i = 0; i < (int)jugadores.size(); i++) {
-        if (jugadores[i].getSeguro() > 0) {
-            cout << "  " << jugadores[i].getNombre() << " pierde su seguro de " << jugadores[i].getSeguro() << "." << endl;
+        if (jugadores[i].participa() && jugadores[i].getMano(0).getSeguro() > 0) {
+            cout << "  " << jugadores[i].getNombre() << " pierde su seguro de " << jugadores[i].getMano(0).getSeguro() << "." << endl;
         }
     }
 
@@ -81,15 +81,15 @@ void Juego::jugarRonda() {
 void Juego::pedirApuestas() {
     for (int i = 0; i < (int)jugadores.size(); i++) {
         Jugador& jugador = jugadores[i];
-        if (jugador.getSaldo() < APUESTA_MINIMA) {
-            cout << "  " << jugador.getNombre() << " no tiene saldo para apostar y no juega." << endl;
+        if (jugador.getFichas() < APUESTA_MINIMA) {
+            cout << "  " << jugador.getNombre() << " no tiene fichas para apostar y no juega." << endl;
             continue;
         }
         int maximo = APUESTA_MAXIMA;
-        if (jugador.getSaldo() < maximo) {
-            maximo = jugador.getSaldo();
+        if (jugador.getFichas() < maximo) {
+            maximo = jugador.getFichas();
         }
-        int apuesta = leerEntero("  Apuesta de " + jugador.getNombre() + " (saldo " + to_string(jugador.getSaldo())
+        int apuesta = leerEntero("  Apuesta de " + jugador.getNombre() + " (fichas " + to_string(jugador.getFichas())
                                  + ", " + to_string(APUESTA_MINIMA) + "-" + to_string(maximo) + "): ",
                                  APUESTA_MINIMA, maximo);
         jugador.apostar(apuesta);
@@ -105,7 +105,7 @@ bool Juego::hayApuestas() {
     return false;
 }
 
-// Solo si el crupier muestra un As. Hasta la mitad de la apuesta y sin pasar el saldo; 0 = no asegurar.
+// Solo si el crupier muestra un As. Hasta la mitad de la apuesta y sin pasar las fichas; 0 = no asegurar.
 void Juego::ofrecerSeguro() {
     if (!crupier.muestraAs()) {
         return;
@@ -117,11 +117,11 @@ void Juego::ofrecerSeguro() {
             continue;
         }
         int maximo = jugador.getMano(0).getApuesta() / 2;
-        if (jugador.getSaldo() < maximo) {
-            maximo = jugador.getSaldo();
+        if (jugador.getFichas() < maximo) {
+            maximo = jugador.getFichas();
         }
         if (maximo <= 0) {
-            cout << "  " << jugador.getNombre() << " no tiene saldo para asegurar." << endl;
+            cout << "  " << jugador.getNombre() << " no tiene fichas para asegurar." << endl;
             continue;
         }
         int monto = leerEntero("  Seguro de " + jugador.getNombre() + " (0 = no, maximo "
@@ -133,15 +133,26 @@ void Juego::ofrecerSeguro() {
 }
 
 // El crupier tiene blackjack: se paga el seguro y se resuelve la mano de cada jugador.
-// Las apuestas y el seguro ya salieron del saldo, asi que cobrar() devuelve apuesta + ganancia.
+// Las apuestas y el seguro ya salieron de las fichas, asi que cobrar() devuelve apuesta + ganancia.
 void Juego::resolverBlackjackDelCrupier() {
     for (int i = 0; i < (int)jugadores.size(); i++) {
         Jugador& jugador = jugadores[i];
         if (!jugador.participa()) {
             continue;
         }
-        // TODO: pagar el seguro (2:1) y resolver la mano del jugador
-        // (empate si tambien tiene blackjack; si no, pierde la apuesta).
+        // Seguro 2:1: se devuelve lo asegurado mas el doble como ganancia
+        if (jugador.getMano(0).getSeguro() > 0) {
+            jugador.cobrar(jugador.getMano(0).getSeguro() * 3);
+            cout << "  " << jugador.getNombre() << " cobra su seguro: +" << jugador.getMano(0).getSeguro() * 2 << "." << endl;
+        }
+        Mano& mano = jugador.getMano(0);
+        if (mano.esBlackjack()) {
+            jugador.cobrar(mano.getApuesta());
+            cout << "  " << jugador.getNombre() << " tambien tiene blackjack: empate, recupera "
+                 << mano.getApuesta() << "." << endl;
+        } else {
+            cout << "  " << jugador.getNombre() << " pierde su apuesta de " << mano.getApuesta() << "." << endl;
+        }
     }
 }
 
@@ -189,7 +200,7 @@ void Juego::mostrarMesa() {
             if (manos[m].esBlackjack()) {
                 cout << "  BLACKJACK!";
             }
-            cout << "   (apuesta " << manos[m].getApuesta() << ", saldo " << jugadores[i].getSaldo() << ")" << endl;
+            cout << "   (apuesta " << manos[m].getApuesta() << ", fichas " << jugadores[i].getFichas() << ")" << endl;
         }
     }
     cout << "  -------------------------------------------------------" << endl;

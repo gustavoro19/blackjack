@@ -9,15 +9,13 @@ using namespace std;
 class Jugador {
     private:
         string nombre;
-        int saldo;
-        int seguro;
+        int fichas;
         vector<Mano> manos;
     public:
-        Jugador(string nombre, int saldoInicial);
+        Jugador(string nombre, int fichasIniciales);
         ~Jugador();
         string getNombre();
-        int getSaldo();
-        int getSeguro();
+        int getFichas();
         bool puedePagar(int monto);
         bool participa();
         bool apostar(int monto);
