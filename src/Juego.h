@@ -18,6 +18,11 @@ class Juego {
         bool hayApuestas();
         void ofrecerSeguro();
         void resolverBlackjackDelCrupier();
+        void turnoJugador(Jugador& jugador);
+        void jugarMano(Jugador& jugador, int indiceMano);
+        void turnoCrupier();
+        int calcularPago(Mano& mano);
+        void resolverPagos();
     public:
         Juego();
         ~Juego();

@@ -1,7 +1,7 @@
 #ifndef CONSTANTES_H
 #define CONSTANTES_H
 
-// Valores de configuracion de la partida. Se cambian aqui y afectan todo el juego.
+// Configuracion de la partida en un solo lugar
 const int CANTIDAD_MAZOS = 6;
 const int CARTAS_POR_MAZO = 52;
 const int FICHAS_INICIALES = 1000;

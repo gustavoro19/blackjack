@@ -9,7 +9,7 @@ Carta::Carta(string rango, string palo) {
 Carta::~Carta() {
 }
 
-// El As vale 11 aqui; la clase Mano lo baja a 1 cuando la mano se pasaria de 21
+// El As vale 11 aqui; Mano lo baja a 1 si hace falta
 int Carta::getValor() {
     if (rango == "A") {
         return 11;

@@ -24,8 +24,7 @@ void Mano::agregarCarta(Carta carta) {
     cartas.push_back(carta);
 }
 
-// Todos los ases se cuentan primero como 11. Mientras la mano se pase de 21
-// y quede algun As contado como 11, ese As pasa a valer 1 (se restan 10).
+// Ases como 11; mientras se pase de 21, cada As baja a 1 (-10)
 int Mano::getValor() {
     int total = 0;
     int asesComoOnce = 0;
@@ -42,7 +41,7 @@ int Mano::getValor() {
     return total;
 }
 
-// Igual que getValor pero ignorando las cartas boca abajo (la oculta del crupier)
+// Sin contar la carta oculta del crupier
 int Mano::getValorVisible() {
     Mano visibles;
     for (int i = 0; i < (int)cartas.size(); i++) {
@@ -66,7 +65,7 @@ bool Mano::puedeDoblar() {
     return cartas.size() == 2 && !doblada;
 }
 
-// Solo con las dos primeras cartas de la ronda; K y 10 cuentan como mismo valor
+// Compara valor, no rango: K y 10 se pueden dividir
 bool Mano::puedeDividir() {
     return cartas.size() == 2 && !dividida && cartas[0].getValor() == cartas[1].getValor();
 }

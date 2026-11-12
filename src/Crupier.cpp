@@ -15,7 +15,7 @@ Mano& Crupier::getMano() {
     return mano;
 }
 
-// La primera carta del crupier es la que va boca arriba
+// La primera carta es la visible
 Carta Crupier::getCartaVisible() {
     return mano.getCartas()[0];
 }
@@ -24,7 +24,7 @@ bool Crupier::muestraAs() {
     return getCartaVisible().esAs();
 }
 
-// Si la carta visible vale 10 o es un As, el crupier revisa si tiene blackjack
+// >= 10 cubre 10, J, Q, K y el As (vale 11)
 bool Crupier::debeRevisarBlackjack() {
     return getCartaVisible().getValor() >= 10;
 }

@@ -48,7 +48,6 @@ int leerEntero(const string &mensaje, int minimo, int maximo)
     }
 }
 
-// No acepta texto vacio
 string leerTexto(const string &mensaje)
 {
     string texto;

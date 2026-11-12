@@ -23,8 +23,7 @@ void Zapato::construir() {
     }
 }
 
-// Algoritmo de Fisher-Yates: se recorre de atras hacia adelante y cada carta
-// se cambia con una posicion al azar entre 0 y ella misma.
+// Fisher-Yates: cada carta se cambia con una posicion al azar entre 0 y ella
 void Zapato::barajar() {
     random_device semilla;
     mt19937 generador(semilla());
@@ -37,7 +36,7 @@ void Zapato::barajar() {
     }
 }
 
-// La carta de arriba del zapato es la ultima del vector, asi sacarla es pop_back
+// La carta de arriba es la ultima del vector
 Carta Zapato::repartir(bool bocaArriba) {
     Carta carta = cartas.back();
     cartas.pop_back();
@@ -63,7 +62,7 @@ int Zapato::contarRango(string rango) {
     return cantidad;
 }
 
-// posicion 0 es la carta de arriba (la proxima en salir)
+// posicion 0 = la proxima carta en salir
 Carta Zapato::verCarta(int posicion) {
     return cartas[cartas.size() - 1 - posicion];
 }

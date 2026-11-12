@@ -20,13 +20,12 @@ bool Jugador::puedePagar(int monto) {
     return monto > 0 && monto <= fichas;
 }
 
-// Un jugador juega la ronda solo si aposto (apostar crea su primera mano)
+// apostar() crea la primera mano: sin manos, no juega la ronda
 bool Jugador::participa() {
     return !manos.empty();
 }
 
-// La apuesta sale de las fichas en el momento de apostar y crea la primera mano.
-// Los limites minimo y maximo los valida Juego antes de llamar aqui.
+// Descuenta al apostar; minimo y maximo los valida Juego
 bool Jugador::apostar(int monto) {
     if (!puedePagar(monto)) {
         return false;
@@ -46,7 +45,7 @@ bool Jugador::doblar(int indiceMano) {
     return true;
 }
 
-// Separa la mano en dos con la misma apuesta. Juego luego reparte una carta a cada una.
+// Juego reparte despues una carta a cada mano
 bool Jugador::dividir(int indiceMano) {
     if (!manos[indiceMano].puedeDividir() || !puedePagar(manos[indiceMano].getApuesta())) {
         return false;
@@ -62,8 +61,7 @@ bool Jugador::dividir(int indiceMano) {
     return true;
 }
 
-// El seguro sale de las fichas del jugador pero se guarda en su mano.
-// Puede ser hasta la mitad de la apuesta original.
+// Las fichas salen del jugador, pero el seguro queda en su mano
 bool Jugador::colocarSeguro(int monto) {
     if (manos.empty() || monto > manos[0].getApuesta() / 2 || !puedePagar(monto)) {
         return false;
