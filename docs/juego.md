@@ -26,7 +26,7 @@ Al inicio de cada ronda, cada jugador escribe su apuesta: de **10 a 500 fichas**
 Después de apostar se reparten las cartas: dos boca arriba para cada jugador, y para el crupier una boca arriba y otra boca abajo. La carta oculta del crupier se dibuja como `#####`, y junto a su nombre aparece solo el valor de la carta visible.
 
 - Al lado de cada jugador se ve el valor de su mano, su apuesta y las fichas que le quedan.
-- Las cartas de corazones (♥) y rombos (♦) salen en rojo; las de tréboles (♣) y picas (♠), en el color normal de la consola. El palo no cambia el valor de la carta.
+- Las cartas de corazones (♥) y rombos (♦) salen en rojo, y las de tréboles (♣) y picas (♠) en el color normal de la consola. El palo no cambia el valor de la carta.
 - Arriba se muestra cuántas cartas quedan en el zapato (6 mazos, 312 cartas al empezar).
 
 ![Mesa](capturas/mesa.png)
