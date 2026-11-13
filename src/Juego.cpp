@@ -36,7 +36,24 @@ bool Juego::partidaTerminada() {
     return true;
 }
 
+void Juego::jugar() {
+    limpiarPantalla();
+    cout << endl;
+    cout << "  +=======================================================+" << endl;
+    cout << "  |              B L A C K J A C K                        |" << endl;
+    cout << "  +=======================================================+" << endl << endl;
+    configurarJugadores();
+    while (!partidaTerminada()) {
+        limpiarPantalla();
+        jugarRonda();
+        pausar();
+    }
+    cout << endl << "  Fin de la partida: no quedan cartas suficientes o nadie tiene fichas." << endl;
+}
+
 void Juego::jugarRonda() {
+    numeroRonda++;
+    cout << endl << "  ===== RONDA " << numeroRonda << " =====" << endl;
     limpiarRonda();
     pedirApuestas();
     if (!hayApuestas()) {

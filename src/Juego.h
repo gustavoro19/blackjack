@@ -28,6 +28,7 @@ class Juego {
         ~Juego();
         void agregarJugador(string nombre);
         void configurarJugadores();
+        void jugar();
         bool apuestaValida(Jugador& jugador, int monto);
         bool hayCartasParaRonda();
         bool partidaTerminada();
