@@ -47,22 +47,3 @@ Carta Zapato::repartir(bool bocaArriba) {
 int Zapato::getCartasRestantes() {
     return (int)cartas.size();
 }
-
-bool Zapato::estaVacio() {
-    return cartas.empty();
-}
-
-int Zapato::contarRango(string rango) {
-    int cantidad = 0;
-    for (int i = 0; i < (int)cartas.size(); i++) {
-        if (cartas[i].getRango() == rango) {
-            cantidad++;
-        }
-    }
-    return cantidad;
-}
-
-// posicion 0 = la proxima carta en salir
-Carta Zapato::verCarta(int posicion) {
-    return cartas[cartas.size() - 1 - posicion];
-}

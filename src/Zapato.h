@@ -16,8 +16,5 @@ class Zapato {
         void barajar();
         Carta repartir(bool bocaArriba);
         int getCartasRestantes();
-        bool estaVacio();
-        int contarRango(string rango);
-        Carta verCarta(int posicion);
 };
 #endif

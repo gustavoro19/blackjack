@@ -6,7 +6,6 @@ Mano::Mano() {
     this->seguro = 0;
     this->doblada = false;
     this->dividida = false;
-    this->plantada = false;
 }
 
 Mano::~Mano() {
@@ -17,7 +16,6 @@ Mano::Mano(int apuesta) {
     this->seguro = 0;
     this->doblada = false;
     this->dividida = false;
-    this->plantada = false;
 }
 
 void Mano::agregarCarta(Carta carta) {
@@ -89,32 +87,12 @@ void Mano::marcarDividida() {
     dividida = true;
 }
 
-void Mano::plantar() {
-    plantada = true;
-}
-
-bool Mano::estaPlantada() {
-    return plantada;
-}
-
-bool Mano::estaDoblada() {
-    return doblada;
-}
-
-bool Mano::esDividida() {
-    return dividida;
-}
-
 int Mano::getApuesta() {
     return apuesta;
 }
 
 int Mano::getSeguro() {
     return seguro;
-}
-
-int Mano::getCantidadCartas() {
-    return (int)cartas.size();
 }
 
 vector<Carta>& Mano::getCartas() {
@@ -125,6 +103,19 @@ string Mano::toString() {
     string texto = "";
     for (int i = 0; i < (int)cartas.size(); i++) {
         texto += cartas[i].toString() + " ";
+    }
+    return texto;
+}
+
+// Se arma fila por fila para que las cartas queden lado a lado
+string Mano::dibujar() {
+    string texto = "";
+    for (int fila = 0; fila < 5; fila++) {
+        texto += "  ";
+        for (int i = 0; i < (int)cartas.size(); i++) {
+            texto += cartas[i].dibujarFila(fila) + " ";
+        }
+        texto += "\n";
     }
     return texto;
 }

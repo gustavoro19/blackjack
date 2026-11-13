@@ -1,7 +1,24 @@
+// windows.h va antes que "using namespace std" (choca con std::byte); NOMINMAX evita su macro max
+#ifdef _WIN32
+#define NOMINMAX
+#include <windows.h>
+#endif
 #include "Consola.h"
 #include <iostream>
 #include <limits>
 #include <cstdlib>
+
+// En Windows: UTF-8 para los simbolos de los palos y codigos ANSI para el color
+void prepararConsola()
+{
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+    HANDLE salida = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD modo = 0;
+    GetConsoleMode(salida, &modo);
+    SetConsoleMode(salida, modo | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+#endif
+}
 
 void limpiarPantalla()
 {

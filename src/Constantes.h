@@ -3,7 +3,6 @@
 
 // Configuracion de la partida en un solo lugar
 const int CANTIDAD_MAZOS = 6;
-const int CARTAS_POR_MAZO = 52;
 const int FICHAS_INICIALES = 1000;
 const int MAX_JUGADORES = 3;
 const int APUESTA_MINIMA = 10;

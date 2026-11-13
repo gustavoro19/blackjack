@@ -37,18 +37,48 @@ bool Juego::partidaTerminada() {
 }
 
 void Juego::jugar() {
+    prepararConsola();
     limpiarPantalla();
     cout << endl;
     cout << "  +=======================================================+" << endl;
     cout << "  |              B L A C K J A C K                        |" << endl;
     cout << "  +=======================================================+" << endl << endl;
     configurarJugadores();
-    while (!partidaTerminada()) {
+    // Al empezar siempre hay cartas y fichas, por eso se juega antes de preguntar
+    while (true) {
         limpiarPantalla();
         jugarRonda();
-        pausar();
+        if (partidaTerminada()) {
+            break;
+        }
+        if (leerEntero("\n  [1] Siguiente ronda  [0] Terminar partida: ", 0, 1) == 0) {
+            break;
+        }
     }
-    cout << endl << "  Fin de la partida: no quedan cartas suficientes o nadie tiene fichas." << endl;
+    mostrarResumen();
+    pausar();
+}
+
+void Juego::mostrarResumen() {
+    cout << endl << "  ===== FIN DE LA PARTIDA =====" << endl;
+    if (!hayCartasParaRonda()) {
+        cout << "  No quedan cartas suficientes en el zapato." << endl;
+    } else if (partidaTerminada()) {
+        cout << "  Ningun jugador tiene fichas para la apuesta minima." << endl;
+    }
+    cout << "  Rondas jugadas: " << numeroRonda << endl;
+    for (int i = 0; i < (int)jugadores.size(); i++) {
+        int diferencia = jugadores[i].getFichas() - FICHAS_INICIALES;
+        cout << "  " << jugadores[i].getNombre() << ": " << jugadores[i].getFichas() << " fichas (";
+        if (diferencia > 0) {
+            cout << "gana " << diferencia;
+        } else if (diferencia < 0) {
+            cout << "pierde " << -diferencia;
+        } else {
+            cout << "sin cambios";
+        }
+        cout << ")" << endl;
+    }
 }
 
 void Juego::jugarRonda() {
@@ -95,7 +125,7 @@ void Juego::jugarRonda() {
 void Juego::turnoCrupier() {
     Mano& mano = crupier.getMano();
     crupier.revelarCartaOculta();
-    cout << endl << "  Turno del crupier: " << mano.toString() << "-> " << mano.getValor() << endl;
+    cout << endl << "  Turno del crupier: " << mano.getValor() << endl << mano.dibujar();
 
     // Si todas las manos se pasaron o son blackjack, sus cartas no cambian el resultado
     bool hayManoPorComparar = false;
@@ -195,7 +225,6 @@ void Juego::jugarMano(Jugador& jugador, int indiceMano) {
     // El blackjack natural no juega; espera al crupier
     if (jugador.getMano(indiceMano).esBlackjack()) {
         cout << "  " << nombre << " tiene BLACKJACK." << endl;
-        jugador.getMano(indiceMano).plantar();
         return;
     }
 
@@ -208,7 +237,6 @@ void Juego::jugarMano(Jugador& jugador, int indiceMano) {
         }
         if (mano.getValor() == BLACKJACK) {
             cout << "  " << nombre << " llega a 21 y se planta." << endl;
-            mano.plantar();
             return;
         }
 
@@ -217,8 +245,9 @@ void Juego::jugarMano(Jugador& jugador, int indiceMano) {
         bool puedeDividir = jugador.getManos().size() == 1 && mano.puedeDividir()
                             && jugador.puedePagar(mano.getApuesta());
 
-        cout << endl << "  Turno de " << nombre << ": " << mano.toString() << "-> " << mano.getValor()
-             << "   (apuesta " << mano.getApuesta() << ", fichas " << jugador.getFichas() << ")" << endl;
+        cout << endl << "  Turno de " << nombre << ": " << mano.getValor()
+             << "   (apuesta " << mano.getApuesta() << ", fichas " << jugador.getFichas() << ")" << endl
+             << mano.dibujar();
         cout << "  Crupier muestra: " << crupier.getCartaVisible().toString() << endl;
         cout << "  [1] Carta  [2] Plantarse";
         if (puedeDoblar) {
@@ -236,14 +265,12 @@ void Juego::jugarMano(Jugador& jugador, int indiceMano) {
             mano.agregarCarta(carta);
         } else if (opcion == 2) {
             cout << "  " << nombre << " se planta con " << mano.getValor() << "." << endl;
-            mano.plantar();
             return;
         } else if (opcion == 3 && puedeDoblar) {
             jugador.doblar(indiceMano);
             Mano& doblada = jugador.getMano(indiceMano);
             Carta carta = zapato.repartir(true);
             doblada.agregarCarta(carta);
-            doblada.plantar();
             cout << "  Dobla a " << doblada.getApuesta() << ", recibe " << carta.toString()
                  << " y queda con " << doblada.getValor() << "." << endl;
             if (doblada.sePaso()) {
@@ -343,10 +370,6 @@ void Juego::resolverBlackjackDelCrupier() {
     }
 }
 
-bool Juego::apuestaValida(Jugador& jugador, int monto) {
-    return monto >= APUESTA_MINIMA && monto <= APUESTA_MAXIMA && jugador.puedePagar(monto);
-}
-
 // Margen de 10 cartas por persona para no quedarse sin cartas a media ronda
 bool Juego::hayCartasParaRonda() {
     return zapato.getCartasRestantes() >= (int)(jugadores.size() + 1) * 10;
@@ -354,7 +377,6 @@ bool Juego::hayCartasParaRonda() {
 
 // Orden de mesa: primera carta a todos, luego la segunda (la del crupier boca abajo)
 void Juego::repartirCartasIniciales() {
-    numeroRonda++;
     for (int vuelta = 0; vuelta < 2; vuelta++) {
         for (int i = 0; i < (int)jugadores.size(); i++) {
             if (jugadores[i].participa()) {
@@ -371,21 +393,21 @@ void Juego::mostrarMesa() {
     cout << endl;
     cout << "  RONDA " << numeroRonda << "   (cartas en el zapato: " << zapato.getCartasRestantes() << ")" << endl;
     cout << "  -------------------------------------------------------" << endl;
-    cout << "  Crupier: " << manoCrupier.toString() << " -> " << manoCrupier.getValorVisible();
+    cout << "  Crupier: " << manoCrupier.getValorVisible();
     if (manoCrupier.getValorVisible() != manoCrupier.getValor()) {
         cout << " (visible)";
     }
-    cout << endl;
+    cout << endl << manoCrupier.dibujar();
 
     for (int i = 0; i < (int)jugadores.size(); i++) {
         vector<Mano>& manos = jugadores[i].getManos();
         for (int m = 0; m < (int)manos.size(); m++) {
-            cout << "  " << jugadores[i].getNombre() << ": " << manos[m].toString()
-                 << " -> " << manos[m].getValor();
+            cout << "  " << jugadores[i].getNombre() << ": " << manos[m].getValor();
             if (manos[m].esBlackjack()) {
                 cout << "  BLACKJACK!";
             }
-            cout << "   (apuesta " << manos[m].getApuesta() << ", fichas " << jugadores[i].getFichas() << ")" << endl;
+            cout << "   (apuesta " << manos[m].getApuesta() << ", fichas " << jugadores[i].getFichas() << ")" << endl
+                 << manos[m].dibujar();
         }
     }
     cout << "  -------------------------------------------------------" << endl;
@@ -396,20 +418,4 @@ void Juego::limpiarRonda() {
         jugadores[i].limpiarRonda();
     }
     crupier.limpiarMano();
-}
-
-Zapato& Juego::getZapato() {
-    return zapato;
-}
-
-Crupier& Juego::getCrupier() {
-    return crupier;
-}
-
-vector<Jugador>& Juego::getJugadores() {
-    return jugadores;
-}
-
-int Juego::getNumeroRonda() {
-    return numeroRonda;
 }

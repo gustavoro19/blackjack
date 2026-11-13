@@ -13,7 +13,6 @@ class Mano {
         int seguro;
         bool doblada;
         bool dividida;
-        bool plantada;
     public:
         Mano();
         ~Mano();
@@ -29,14 +28,10 @@ class Mano {
         void doblarApuesta();
         void asegurar(int monto);
         void marcarDividida();
-        void plantar();
-        bool estaPlantada();
-        bool estaDoblada();
-        bool esDividida();
         int getApuesta();
         int getSeguro();
-        int getCantidadCartas();
         vector<Carta>& getCartas();
         string toString();
+        string dibujar();
 };
 #endif

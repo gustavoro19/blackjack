@@ -4,6 +4,7 @@
 
 using namespace std;
 
+void prepararConsola();
 void limpiarPantalla();
 void pausar();
 int leerEntero(const string &mensaje, int minimo, int maximo);

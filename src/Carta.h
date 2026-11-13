@@ -9,15 +9,17 @@ class Carta {
         string rango;
         string palo;
         bool bocaArriba;
+        bool esRoja();
+        string getSimbolo();
+        string colorear(string texto);
     public:
         Carta(string rango, string palo);
         ~Carta();
         int getValor();
         bool esAs();
-        string getRango();
-        string getPalo();
         bool estaBocaArriba();
         void setBocaArriba(bool bocaArriba);
         string toString();
+        string dibujarFila(int fila);
 };
 #endif

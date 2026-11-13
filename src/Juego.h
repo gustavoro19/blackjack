@@ -23,22 +23,18 @@ class Juego {
         void turnoCrupier();
         int calcularPago(Mano& mano);
         void resolverPagos();
+        void mostrarResumen();
     public:
         Juego();
         ~Juego();
         void agregarJugador(string nombre);
         void configurarJugadores();
         void jugar();
-        bool apuestaValida(Jugador& jugador, int monto);
         bool hayCartasParaRonda();
         bool partidaTerminada();
         void jugarRonda();
         void repartirCartasIniciales();
         void mostrarMesa();
         void limpiarRonda();
-        Zapato& getZapato();
-        Crupier& getCrupier();
-        vector<Jugador>& getJugadores();
-        int getNumeroRonda();
 };
 #endif
